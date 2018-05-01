@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  truffle:
+    build: .docker-truffle/
+    links:
+      - ganache
+    environment:
+      RPC_HOST: ganache
+    volumes:
+      - .:/src
+  ganache:
+    image: trufflesuite/ganache-cli
+    ports:
+      - 8545:8545
+  ipfs:
+    build: .docker-ipfs/
+    ports:
+      - 4001:4001
+      - 5001:5001
+      - 8080:8080
+    volumes:
+      - ./ipfs/staging:/export
+      - ./ipfs/data:/data/ipfs
+  create-react-app:
+    build: .docker-react/
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client:/src
+      - ./build/contracts:/src/src/contracts
+      - app-modules:/src/node_modules
+
+volumes:
+  app-modules:
